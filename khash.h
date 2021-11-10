@@ -46,8 +46,8 @@ static inline uint64_t khash_fn(uint64_t input, uint64_t func) {
 
     h ^= input - 2;
     h -= ROTR(h, 19);
-    h -= ROTR(h, 31);
     h += ROTR(h, 5);
+    h -= ROTR(h, 31);
     return h;
 }
 
