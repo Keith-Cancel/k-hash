@@ -9,7 +9,7 @@ void foo() {
     /*
     code ....
     */
-    uint64_t hash = khash_fn(value, your_random_number);
+    uint64_t hash = khash64_fn(value, your_random_number);
     /*
     code ....
     */
