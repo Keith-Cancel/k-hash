@@ -27,27 +27,50 @@ SOFTWARE.
 
 #include <stdint.h>
 
-#define ROTR(x,n) (((x) >> (n)) | ((x) << (64 - (n))))
+#define ROTR32(x,n) (((x) >> (n)) | ((x) << (32 - (n))))
+#define ROTR64(x,n) (((x) >> (n)) | ((x) << (64 - (n))))
 
 // Just initialize with the fractional part of sqrt(2)
-#define khash(input) khash_fn(input, 0x6a09e667f3bcc908)
+#define khash64(input) khash64_fn(input, 0x6a09e667f3bcc908)
+#define khash32(input) khash32_fn(input, 0x6a09e667, 0xf3bcc908)
 
-static inline uint64_t khash_fn(uint64_t input, uint64_t func) {
+static inline uint64_t khash64_fn(uint64_t input, uint64_t func) {
     uint64_t h = func;
     h ^= input - 7;
-    h ^= ROTR(h, 31);
-    h -= ROTR(h, 11);
-    h -= ROTR(h, 17);
+    h ^= ROTR64(h, 31);
+    h -= ROTR64(h, 11);
+    h -= ROTR64(h, 17);
 
     h ^= input - 13;
-    h ^= ROTR(h, 23);
-    h += ROTR(h, 31);
-    h -= ROTR(h, 13);
+    h ^= ROTR64(h, 23);
+    h += ROTR64(h, 31);
+    h -= ROTR64(h, 13);
 
     h ^= input - 2;
-    h -= ROTR(h, 19);
-    h += ROTR(h, 5);
-    h -= ROTR(h, 31);
+    h -= ROTR64(h, 19);
+    h += ROTR64(h, 5);
+    h -= ROTR64(h, 31);
+    return h;
+}
+
+static inline uint32_t khash32_fn(uint32_t input, uint32_t func1, uint32_t func2) {
+	uint32_t h = input;
+	h  = ROTR32(h, 16);
+	h ^= func2;
+	h -= 5;
+	h  = ROTR32(h, 17);
+	h += func1;
+	h  = ROTR32(h, 1);
+
+	h += ROTR32(h, 27);
+	h ^= ROTR32(h, 3);
+	h -= ROTR32(h, 17);
+	h -= ROTR32(h, 27);
+
+	h ^= input - 107;
+	h -= ROTR32(h, 11);
+	h ^= ROTR32(h, 7);
+	h -= ROTR32(h, 5);
     return h;
 }
 
